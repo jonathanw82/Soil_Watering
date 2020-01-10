@@ -14,25 +14,32 @@
 #include "Arduino.h"
 #include <avr/sleep.h>
 #include <avr/wdt.h>
+#include <OneWire.h>              // enable single sensor Lib
 
-const int ledPin = 2;        // output pin for the LED (to show it is awake)
-const int PumpPin = 5;       // output to realy to control water pump
-const int SensorPowerPin = 6;
+const int ledRed = 3;        // output pin for the LED
+const int ledGreen = 5;        // output pin for the LED
+const int ledBlue = 6;        // output pin for the LED
+const int PumpPin = 8;       // output to realy to control water pump
+const int SensorPowerPin = 9;
 int PowerDownDisable = 0;
 volatile char sleepCnt = 8;  // makes the arduino sleep for ex amount of seconds 8 max
-const int AirValue = 592;    //you need to replace this value with Value_1
-const int WaterValue = 306;  //you need to replace this value with Value_2
+const int AirValue = 625;    //you need to replace this value with Value_1
+const int WaterValue = 300;  //you need to replace this value with Value_2
 int intervals = (AirValue - WaterValue) / 3;
 int soilMoistureValue = 0;
 int ReadSensorDelay = 0;
-int delayTime = 0;
+int delayTime;
 int previousedelayTime = 0;
+int ledFadePeriode = 2000;
+long LEDtime;
+int ledVal = 0;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SETUP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void setup() {
-  Serial.begin(9600);        // open serial port, set the baud rate to 9600 bps
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, HIGH);
+ // Serial.begin(9600);        // open serial port, set the baud rate to 9600 bps
+  pinMode(ledRed, OUTPUT);
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledBlue, OUTPUT);
   pinMode(PumpPin, OUTPUT);
   digitalWrite(PumpPin, LOW);
   pinMode(SensorPowerPin, OUTPUT);
@@ -41,6 +48,7 @@ void setup() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void loop() {
   Debug();
+  LEDtime = millis();
   delayTime = millis();
 
   if (delayTime - previousedelayTime >= 400) {
@@ -51,27 +59,35 @@ void loop() {
     ReadSensorDelay = 1;
     digitalWrite (SensorPowerPin, HIGH);
     Serial.println("READ SENSORS");
-    digitalWrite (ledPin, LOW);
   }
 
   if (PowerDownDisable == 0 && ReadSensorDelay == 0) {
     digitalWrite (SensorPowerPin, LOW);
+    digitalWrite(ledGreen, LOW);    
     Sleeping();
   }
 
   soilMoistureValue = analogRead(A0);  //put Sensor insert into soil
 
-  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))
+  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                   // dry
   {
     digitalWrite (PumpPin, LOW);
-    Serial.println("Very Wet");
+    digitalWrite (ledBlue, LOW);
+    digitalWrite (ledRed, LOW);
     PowerDownDisable = 0;
   }
-  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))
+  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // moist
+  {
+    ledBlueFade();
+    digitalWrite (ledRed, LOW);
+    PowerDownDisable = 1;
+  }
+  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))                // Wet
   {
     PowerDownDisable = 1;
     digitalWrite (PumpPin, HIGH);
-    Serial.println("Dry");
+    digitalWrite (ledBlue, LOW);
+    ledRedFade();
   }
 }
 /*
