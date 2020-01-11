@@ -1,5 +1,5 @@
 /*
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Conductive Soil probe connected to a naked ATmega328P chip ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~ Conductive Soil probe connected to a naked ATmega328P chip ~~~~~~~~~~~~~~~~~~~~~~
 
   This code allows the ATmega328P to sleep in power down mode to extend battery life, After an alloted amount of time checked by a while statment
   and a sleep count an led will blink, when the wake up time is reached a watchdog interupt will wake the chip and enable a transistor connected to the
@@ -11,6 +11,7 @@
 
   Please See attached wiring Schymatic!
 */
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  SOIL PROBE VR1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "Arduino.h"
 #include <avr/sleep.h>
 #include <avr/wdt.h>
@@ -30,7 +31,7 @@ int soilMoistureValue = 0;
 int ReadSensorDelay = 0;
 int delayTime;
 int previousedelayTime = 0;
-int ledFadePeriode = 2000;
+int ledFadePeriod = 2000;
 long LEDtime;
 int ledVal = 0;
 
@@ -91,7 +92,7 @@ void loop() {
   }
 }
 /*
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Examples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Examples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   The intervals equal air value minus water value times by 3 in this case == 93
   Dry: (585 492]
   Wet: (492 399]

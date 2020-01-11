@@ -1,4 +1,18 @@
-
+/*
+    128+127 = 255 
+    PI = 3.14
+    2 * 3.14 /ledFadePeriod (2000) = 0.00314
+    ledFadePeriod = 0.00314
+    LEDtime = 1000
+    cos(0.00314 * 1000) = -1
+    (0.00314 * 1000) = 3.14
+    128+127 * cos(0.00314 * 1000) = 255
+    
+    The cosine will be 1 at multiples of ledFadePeriod, and -1 at multiple-and-a-half of ledFadePeriod. 
+    It will start at 1 (counting from when the arduino was last reset) and go to -1 at millis()=1000, and back to 1 at millis()=2000.
+    2pi radians in a circle the circumference of a circle is 2pi times the radius.  
+ */
+ 
 void led() {
   digitalWrite(ledGreen, HIGH);        // I would not usually use delay() however i need the led to blink before the sleep cycle is reenabled
   delay(200);
@@ -9,11 +23,11 @@ void led() {
   digitalWrite(ledGreen, LOW);
 }
 void ledRedFade() {
-  ledVal = 128 + 127 * cos(2 * PI / ledFadePeriode *  LEDtime);
-  analogWrite(ledRed, ledVal);           // sets the value (range from 0 to 255)
-}
-void ledBlueFade() {
-  ledVal = 128 + 127 * cos(2 * PI / ledFadePeriode *  LEDtime);
+  ledVal = 128 + 127 * cos(2 * PI / ledFadePeriod * LEDtime);                          
+  analogWrite(ledRed, ledVal);           // sets the value (range from 0 to 255)      
+}                                                                                     
+void ledBlueFade() {                                                                   
+  ledVal = 128 + 127 * cos(2 * PI / ledFadePeriod * LEDtime);
   analogWrite(ledBlue, ledVal);           // sets the value (range from 0 to 255)
 }
 
@@ -33,8 +47,8 @@ void Sleeping() {
      SLEEP_MODE_STANDBY (Oscillator keeps running, makes for faster wake-up)
      SLEEP_MODE_PWR_DOWN (Deep sleep)
   */
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  sleep_enable();
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
 
   while (sleepCnt < 8) {
     // Turn of Brown Out Detection (low voltage). This is automatically re-enabled upon timer interrupt
@@ -53,8 +67,8 @@ void Sleeping() {
 
     // Send a message just to show we are about to sleep
     led();
-  //  Serial.println("Good night!");
-  //  Serial.flush();
+    // Serial.println("Good night!");
+    // Serial.flush();
 
     // Allow interrupts now
     interrupts();
@@ -78,10 +92,10 @@ void Sleeping() {
 
   // Re-enable ADC if it was previously running
   ADCSRA = prevADCSRA;
-}
+  }
 
-// When WatchDog timer causes �C to wake it comes here
-ISR (WDT_vect) {
+  // When WatchDog timer causes �C to wake it comes here
+  ISR (WDT_vect) {
 
   // Turn off watchdog, we don't want it to do anything (like resetting this sketch)
   wdt_disable();
