@@ -7,3 +7,7 @@ watchdog interupt will wake the chip and enable a transistor connected to the so
 then wait 400th of a second for the reading to stablise then determine what to do next.
 If the soil is dry (PowerDownDisable) will stop the sleep routine enable the pump transistor (PumpPin)
 to run the pump to water the soil until the soil is wet again then shut down the pump enable sleep and run the sequence all over again.
+
+Reference:-
+Ref# https://github.com/RalphBacon/Arduino-Deep-Sleep
+Ref# https://wiki.dfrobot.com/Capacitive_Soil_Moisture_Sensor_SKU_SEN0193
