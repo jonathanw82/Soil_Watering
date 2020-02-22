@@ -22,6 +22,8 @@ const int ledGreen = 5;        // output pin for the LED
 const int ledBlue = 6;        // output pin for the LED
 const int PumpPin = 8;       // output to realy to control water pump
 const int SensorPowerPin = 9;
+const int waterLoadSwitch = 10;
+int waterAmount = 0;
 int PowerDownDisable = 0;
 volatile char sleepCnt = 8;  // makes the arduino sleep for ex amount of seconds 8 max
 const int AirValue = 625;    //you need to replace this value with Value_1
@@ -45,12 +47,15 @@ void setup() {
   digitalWrite(PumpPin, LOW);
   pinMode(SensorPowerPin, OUTPUT);
   digitalWrite(SensorPowerPin, LOW);
+  pinMode (waterLoadSwitch, INPUT_PULLUP);
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void loop() {
   Debug();
   LEDtime = millis();
   delayTime = millis();
+  waterAmount = digitalRead(waterLoadSwitch);
+  
 
   if (delayTime - previousedelayTime >= 400) {
     previousedelayTime = delayTime;
@@ -70,7 +75,9 @@ void loop() {
 
   soilMoistureValue = analogRead(A0);  //put Sensor insert into soil
 
-  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                   // dry
+  if (waterAmount == LOW){
+
+  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                  // Wet
   {
     digitalWrite (PumpPin, LOW);
     digitalWrite (ledBlue, LOW);
@@ -83,12 +90,30 @@ void loop() {
     digitalWrite (ledRed, LOW);
     PowerDownDisable = 1;
   }
-  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))                // Wet
+  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))                // Dry
   {
     PowerDownDisable = 1;
     digitalWrite (PumpPin, HIGH);
     digitalWrite (ledBlue, LOW);
     ledRedFade();
+  }
+  }
+  else {
+    
+  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                   // Wet
+  {
+    digitalWrite (PumpPin, LOW);
+    digitalWrite (ledBlue, LOW);
+    digitalWrite (ledRed, LOW);
+    PowerDownDisable = 0;
+  }
+  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // moist
+  {
+    ledBlueFade();
+    digitalWrite (ledRed, LOW);
+    digitalWrite (PumpPin, HIGH);
+    PowerDownDisable = 1;
+  }
   }
 }
 /*

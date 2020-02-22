@@ -14,7 +14,7 @@
  */
  
 void led() {
-  digitalWrite(ledGreen, HIGH);        // I would not usually use delay() however i need the led to blink before the sleep cycle is reenabled
+  digitalWrite(ledGreen, HIGH);        // I would not usually use delay() however i need the led to blink before the sleep cycle is re-enabled
   delay(200);
   digitalWrite(ledGreen, LOW);
   delay(10);
