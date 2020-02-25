@@ -99,8 +99,7 @@ void loop() {
   }
   }
   else {
-    
-  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                   // Wet
+     if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                  // Wet
   {
     digitalWrite (PumpPin, LOW);
     digitalWrite (ledBlue, LOW);
@@ -109,11 +108,19 @@ void loop() {
   }
   else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // moist
   {
-    ledBlueFade();
+    digitalWrite (PumpPin, LOW);
+    digitalWrite (ledBlue, LOW);
     digitalWrite (ledRed, LOW);
-    digitalWrite (PumpPin, HIGH);
-    PowerDownDisable = 1;
+    PowerDownDisable = 0;
   }
+  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))                // Dry
+  {
+    PowerDownDisable = 1;
+    digitalWrite (PumpPin, HIGH);
+    digitalWrite (ledBlue, LOW);
+    ledRedFade();
+  }
+ 
   }
 }
 /*
