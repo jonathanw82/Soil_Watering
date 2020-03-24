@@ -75,38 +75,15 @@ void loop() {
 
   soilMoistureValue = analogRead(A0);  //put Sensor insert into soil
 
-  if (waterAmount == LOW){
 
-  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                  // Wet
+     if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                // very Wet
   {
     digitalWrite (PumpPin, LOW);
     digitalWrite (ledBlue, LOW);
     digitalWrite (ledRed, LOW);
     PowerDownDisable = 0;
   }
-  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // moist
-  {
-    ledBlueFade();
-    digitalWrite (ledRed, LOW);
-    PowerDownDisable = 1;
-  }
-  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))                // Dry
-  {
-    PowerDownDisable = 1;
-    digitalWrite (PumpPin, HIGH);
-    digitalWrite (ledBlue, LOW);
-    ledRedFade();
-  }
-  }
-  else {
-     if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))                  // Wet
-  {
-    digitalWrite (PumpPin, LOW);
-    digitalWrite (ledBlue, LOW);
-    digitalWrite (ledRed, LOW);
-    PowerDownDisable = 0;
-  }
-  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // moist
+  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals)) // wet
   {
     digitalWrite (PumpPin, LOW);
     digitalWrite (ledBlue, LOW);
@@ -122,7 +99,7 @@ void loop() {
   }
  
   }
-}
+
 /*
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Examples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   The intervals equal air value minus water value times by 3 in this case == 93
