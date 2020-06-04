@@ -1,3 +1,7 @@
+<h1 align="center">
+   <img src="static/images/.jpg" alt="logo image"/>
+ </h1>
+ 
 # Soil_Watering
 
 These Files make up a autowatering system 
